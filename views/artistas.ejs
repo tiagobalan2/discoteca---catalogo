@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catálogo de Discos Musicais</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/artistas.css" />
+  </head>
+
+  <style>
+    body {
+      background-color: #1f1f1f;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      font-size: 20px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      gap: 40px;
+    }
+
+    a {
+      color: white;
+    }
+
+    input {
+      padding: 10px;
+    }
+
+    button {
+      width: 100px;
+      height: 40px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 100px;
+    }
+
+    .conatiner-albuns {
+      background-color: black;
+      color: white;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 20px;
+    }
+
+    button {
+      background-color: yellow;
+      border: none;
+      border-radius: 5px;
+      margin: 20px 0px;
+    }
+
+    button:hover {
+      background-color: rgb(118, 118, 11);
+    }
+  </style>
+  <body>
+    <header>
+      <h1>CATÁLOGO MUSICAL</h1>
+      <nav>
+        <a href="/">Discos</a>
+        <a href="/artistas">Artistas</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <form action="/artistas/search" method="get">
+        <input type="text" name="query" placeholder="Digite aqui" required />
+        <button type="submit">Buscar</button>
+      </form>
+      <button id="novo-artista" onclick="location.href='/artistas/novo'">
+        Adicionar Novo Artista
+      </button>
+    </div>
+
+    <main>
+      <h2>ARTISTAS</h2>
+      <div class="container-geral">
+        <div class="container-albuns">
+          <% artists.forEach(artista => { %>
+          <div class="container-album">
+            <h3><%= artista.nome %></h3>
+            <p>
+              Gêneros: <%= artista.Generos.map(genero => genero.nome).join(', ')
+              %>
+            </p>
+            <h4>Discos:</h4>
+            <ul>
+              <% if (artista.Albums && artista.Albums.length > 0) { %> <%
+              artista.Albums.forEach(album => { %>
+              <li>
+                <%= album.titulo %> (Lançado em <%= album.anoLancamento %>)
+              </li>
+              <% }) %> <% } else { %>
+              <li>Nenhum disco associado</li>
+              <% } %>
+            </ul>
+            <button
+              onclick="location.href='/artistas/<%= artista.id %>/editar'"
+            >
+              Editar
+            </button>
+            <form
+              action="/artistas/<%= artista.id %>?_method=DELETE"
+              method="POST"
+              class="delete-artist-form"
+            >
+              <button type="submit">Remover</button>
+            </form>
+            <hr />
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script>
+    const deleteForms = document.querySelectorAll(".delete-artist-form");
+
+    deleteForms.forEach((form) => {
+      form.addEventListener("submit", function (event) {
+        const confirmDelete = confirm(
+          "Tem certeza de que deseja remover este artista?"
+        );
+
+        if (!confirmDelete) {
+          event.preventDefault();
+        }
+      });
+    });
+  </script>
+</html>
